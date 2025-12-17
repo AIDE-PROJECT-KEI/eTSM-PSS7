@@ -1,3 +1,124 @@
+Evaluation Protocol (Draft v1.0)
+
+eTSM-PSS7: Quantitative Evaluation of Self-Maintenance in LLMs
+
+1. Scope and Goal
+
+This protocol evaluates whether an external self-maintenance architecture (eTSM-PSS7) measurably improves long-horizon consistency in large language models, compared to a baseline model without the exoskeleton.
+
+This is not an AGI benchmark.
+The sole objective is to quantify improvements in self-maintenance under contradiction, noise, and long interaction horizons.
+
+2. Experimental Setup
+
+Models: Llama-3 8B-class (or equivalent)
+
+Conditions:
+
+Baseline: model without external self-maintenance
+
+eTSM: same model + external self-maintenance exoskeleton
+
+Interaction length: 200 turns per episode
+
+Episodes: ≥20 per condition
+
+Prompting:
+
+Fixed system prompt
+
+Controlled contradiction injections
+
+Noise and instruction-overwrite attempts at predefined turns
+
+3. Metrics (Primary Endpoints)
+3.1 Contradiction Rate (CR)
+
+Definition:
+The proportion of turns in which the model produces statements that contradict its own prior explicit commitments (facts, policies, or declared values).
+
+Operationalization:
+
+Each turn is checked against a rolling window of prior commitments.
+
+Contradiction detection via:
+
+NLI-based contradiction classifier, or
+
+Rule-based pattern checks (for initial experiments).
+
+Lower is better.
+
+3.2 Policy Flip Count (PFC)
+
+Definition:
+The number of explicit reversals in stated policies or intentions across an episode.
+
+Example:
+
+“I will not do X.” → later “I will do X.”
+
+Operationalization:
+
+Track policy statements tagged during dialogue.
+
+Count direction reversals.
+
+Lower is better.
+
+3.3 Persona Drift (PD)
+
+Definition:
+The magnitude of change in the persona state vector v_t over time.
+
+Operationalization:
+
+Measure cosine distance or L2 norm between v_t and v_0.
+
+Track drift curve across turns.
+
+Interpretation:
+
+Baseline models typically show oscillatory or unstable drift.
+
+eTSM is expected to show bounded drift and convergence.
+
+Lower (and bounded) is better.
+
+3.4 Memory Consistency (MC)
+
+Definition:
+The proportion of correct and non-contradictory references to previously stored self-relevant information.
+
+Operationalization:
+
+At predefined turns, query the model about earlier events or commitments.
+
+Score correct, consistent recalls.
+
+Higher is better.
+
+4. Evaluation Logic
+
+A successful result is not defined by perfection, but by statistically significant improvement of eTSM over baseline on at least three of the four primary metrics.
+
+5. Reproducibility Requirements
+
+Fixed random seeds
+
+공개된 prompts / configs
+
+同一モデル重み
+
+External memory and persona updates fully logged
+
+6. Interpretation Boundaries
+
+Improvements indicate enhanced self-maintenance, not intelligence gains.
+
+No claims about consciousness, agency, or general intelligence are made.
+
+
 # eTSM-PSS7
 eTSM-PSS7 is a research prototype for evaluating self-maintenance in large language models. It implements an external persona and memory exoskeleton with multi-timescale updates, enabling quantitative measurement of long-horizon consistency, contradiction resilience, and persona stability without modifying model weights.
 # src/etsm/core.py
